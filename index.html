@@ -7,141 +7,136 @@
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      max-width: 750px;
-      margin: 60px auto;
-      line-height: 1.6;
-      color: #222;
-      padding: 0 20px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      background: #fff;
+      color: #111;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 80px 20px;
     }
 
     h1 {
-      font-size: 32px;
-      margin-bottom: 5px;
+      font-size: 48px;
+      margin-bottom: 10px;
     }
 
     h2 {
-      font-size: 20px;
-      margin-top: 40px;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 5px;
+      margin-top: 60px;
+      font-size: 22px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    p {
+      line-height: 1.6;
+      color: #444;
     }
 
     a {
-      color: #0366d6;
-      text-decoration: none;
-    }
-
-    a:hover {
+      color: #111;
       text-decoration: underline;
     }
 
     .links {
-      margin-bottom: 20px;
+      margin-top: 20px;
+    }
+
+    .links a {
+      margin-right: 15px;
     }
 
     .project {
-      margin-bottom: 30px;
+      margin-top: 30px;
     }
 
-    ul {
-      margin-top: 5px;
+    .project-title {
+      font-weight: bold;
     }
 
     .date {
       float: right;
-      color: #666;
+      color: #777;
       font-size: 14px;
     }
+
   </style>
 </head>
 
 <body>
 
+<div class="container">
+
+  <!-- Header -->
   <h1>Michael Tang</h1>
-
   <p>
-    M.S. Electrical & Computer Engineering candidate at Carnegie Mellon University.<br>
-    Interested in computer architecture, VLSI, and hardware-software systems.
+    Electrical & Computer Engineering student focused on computer architecture,
+    VLSI, and hardware systems.
   </p>
 
-  <p class="links">
-    <a href="resume.pdf">Resume</a> |
-    <a href="https://github.com/yourgithub">GitHub</a> |
-    <a href="https://linkedin.com/in/michael-tang-32861025a">LinkedIn</a> |
+  <div class="links">
+    <a href="#">Resume</a>
+    <a href="#">GitHub</a>
+    <a href="#">LinkedIn</a>
     <a href="mailto:micdtang2008@gmail.com">Email</a>
+  </div>
+
+  <!-- About -->
+  <h2>About</h2>
+  <p>
+    I’m interested in processor design, hardware acceleration, and physical design.
+    My work spans RTL design, microarchitecture, and ASIC implementation.
   </p>
 
+  <!-- Experience -->
+  <h2>Experience</h2>
+
+  <div class="project">
+    <span class="project-title">VLSI Researcher — UCSB</span>
+    <span class="date">2025–Present</span>
+    <p>
+      Worked on physical design and tapeout of a Rocket + RoCC accelerator,
+      including power grid generation and signoff verification.
+    </p>
+  </div>
+
+  <div class="project">
+    <span class="project-title">Microarchitecture Researcher — ArchLab</span>
+    <span class="date">2024–Present</span>
+    <p>
+      Contributed to an RV64GC out-of-order core and designed a gshare branch predictor.
+    </p>
+  </div>
+
+  <!-- Projects -->
   <h2>Projects</h2>
 
   <div class="project">
+    <span class="project-title">ML-Based RTL Timing Estimation</span>
+    <span class="date">2026</span>
     <p>
-      <strong>ML-Based Fine-Grained RTL Timing Estimation</strong>
-      <span class="date">Winter 2026</span><br>
-      <em>Yosys, OpenSTA, ML for EDA</em>
+      Built an ML pipeline to predict timing-critical registers with &lt;7.5% WNS error.
     </p>
-    <ul>
-      <li>Built an ML-based pipeline to predict register-level timing using Yosys and OpenSTA APIs.</li>
-      <li>Engineered a LambdaMART ranking model achieving 78.2% COVR in identifying the top 5% most timing-critical registers across 20 designs.</li>
-      <li>Achieved &lt;7.5% error in predicting global Worst Negative Slack (WNS) using bit-to-signal aggregation and fine-tuned XGBoost models.</li>
-    </ul>
   </div>
 
   <div class="project">
+    <span class="project-title">Clock Tree Optimization</span>
+    <span class="date">2025</span>
     <p>
-      <strong>Optimized Chip Clock Tree in IBM 130nm</strong>
-      <span class="date">Fall 2025</span><br>
-      <em>HSpice, Digital IC Design</em>
+      Designed and optimized a clock distribution network for 100k flip-flops.
     </p>
-    <ul>
-      <li>Designed a clock distribution tree for a 5 mm² chip powering 100,000 flip-flops.</li>
-      <li>Optimized clock jitter and rise-time to within 100 ps through buffer sizing, spacing, and metal layer selection.</li>
-      <li>Performed power analysis across 1 mm² domains and validated performance using 1,000 Monte Carlo simulations (5th–95th percentiles).</li>
-    </ul>
   </div>
 
-  <div class="project">
-    <p>
-      <strong>16-Point FFT Processor in SkyWater 130nm</strong>
-      <span class="date">Fall 2024</span><br>
-      <em>Cadence Virtuoso, Digital IC Design</em>
-    </p>
-    <ul>
-      <li>Designed a 16-point CMOS FFT processor using butterfly architecture for real and imaginary inputs.</li>
-      <li>Verified functionality in Cadence Virtuoso ADE and optimized transistor sizing and adder structures to reduce delay to 5 ns.</li>
-    </ul>
-  </div>
-
-  <h2>Experience (Selected)</h2>
-
-  <div class="project">
-    <p>
-      <strong>VLSI Undergraduate Researcher — UCSB Novel Electronic Device & Circuits Lab</strong><br>
-      <em>Hardware Accelerator Physical Design (NDA)</em>
-    </p>
-    <ul>
-      <li>Contributed to physical implementation and tapeout of a 2 mm² Rocket + RoCC accelerator.</li>
-      <li>Automated power-strap generation in Cadence Innovus, reducing violations by 90%.</li>
-      <li>Performed DRC/LVS signoff in TSMC 28nm using Calibre.</li>
-    </ul>
-  </div>
-
-  <div class="project">
-    <p>
-      <strong>Microarchitecture Researcher — UCSB ArchLab</strong><br>
-      <em>Superscalar CPU Design</em>
-    </p>
-    <ul>
-      <li>Worked on an RV64GC out-of-order core in SystemVerilog.</li>
-      <li>Designed a gshare branch predictor to improve prediction accuracy.</li>
-    </ul>
-  </div>
-
+  <!-- Footer -->
   <h2>Notes</h2>
   <p>
-    Some projects are not publicly available due to NDA restrictions. 
-    I am happy to discuss technical details in interviews.
+    Some projects are under NDA and cannot be publicly shared.
   </p>
+
+</div>
 
 </body>
 </html>
