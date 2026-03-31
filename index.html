@@ -1,142 +1,539 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Michael Tang</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta
+    name="description"
+    content="Michael Tang — Electrical and Computer Engineering student focused on computer architecture, VLSI, and hardware systems."
+  />
   <style>
+    :root {
+      --bg: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --light: #94a3b8;
+      --border: #e2e8f0;
+      --card: #ffffff;
+      --link: #0f172a;
+      --max-width: 1200px;
+      --left-col: 42%;
+      --right-col: 58%;
+      --section-gap: 7rem;
+      --transition: 180ms ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       margin: 0;
-      background: #fff;
-      color: #111;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 80px 20px;
-    }
-
-    h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      margin-top: 60px;
-      font-size: 22px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    p {
-      line-height: 1.6;
-      color: #444;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
     a {
-      color: #111;
-      text-decoration: underline;
+      color: var(--link);
+      text-decoration: none;
+      transition: opacity var(--transition);
     }
 
-    .links {
-      margin-top: 20px;
+    a:hover {
+      opacity: 0.7;
     }
 
-    .links a {
-      margin-right: 15px;
+    .page {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 32px;
+      display: grid;
+      grid-template-columns: minmax(280px, var(--left-col)) minmax(320px, var(--right-col));
+      gap: 48px;
     }
 
-    .project {
-      margin-top: 30px;
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 96px 0 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    .project-title {
-      font-weight: bold;
+    .sidebar-top {
+      max-width: 420px;
     }
 
-    .date {
-      float: right;
-      color: #777;
-      font-size: 14px;
+    h1 {
+      font-size: clamp(2.6rem, 5vw, 4.3rem);
+      line-height: 1;
+      margin: 0 0 10px;
+      letter-spacing: -0.04em;
+      font-weight: 700;
     }
 
+    .subtitle {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 0 0 20px;
+      color: var(--text);
+    }
+
+    .intro {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 22rem;
+      margin: 0 0 40px;
+    }
+
+    .nav {
+      margin-top: 48px;
+    }
+
+    .nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav li + li {
+      margin-top: 18px;
+    }
+
+    .nav a {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      color: var(--light);
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .nav a::before {
+      content: "";
+      display: inline-block;
+      width: 32px;
+      height: 1px;
+      background: var(--light);
+      transition: width var(--transition), background var(--transition);
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      color: var(--text);
+    }
+
+    .nav a:hover::before,
+    .nav a.active::before {
+      width: 64px;
+      background: var(--text);
+    }
+
+    .socials {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding-top: 32px;
+    }
+
+    .socials a {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .content {
+      padding: 96px 0;
+    }
+
+    section {
+      scroll-margin-top: 96px;
+    }
+
+    section + section {
+      margin-top: var(--section-gap);
+    }
+
+    .section-heading {
+      display: none;
+      margin: 0 0 24px;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .about p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .about strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 24px;
+      padding: 18px 18px;
+      border-radius: 14px;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .card:hover {
+      background: #fafafa;
+      transform: translateY(-1px);
+    }
+
+    .card-date {
+      color: var(--light);
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding-top: 4px;
+      white-space: nowrap;
+    }
+
+    .card-body h3 {
+      margin: 0 0 6px;
+      font-size: 1rem;
+      line-height: 1.4;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .card-body .role {
+      display: block;
+      color: var(--muted);
+      font-size: 0.94rem;
+      margin-bottom: 10px;
+    }
+
+    .card-body p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .resume-link,
+    .archive-link {
+      display: inline-block;
+      margin-top: 24px;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .footer-note {
+      margin-top: 80px;
+      color: var(--light);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 0 20px;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        padding: 72px 0 16px;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .content {
+        padding: 24px 0 72px;
+      }
+
+      .section-heading {
+        display: block;
+        position: sticky;
+        top: 0;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(8px);
+        padding: 16px 0;
+        z-index: 10;
+      }
+
+      section + section {
+        margin-top: 5rem;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .card {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 16px 0;
+      }
+
+      .card-date {
+        padding-top: 0;
+      }
+
+      h1 {
+        font-size: 2.7rem;
+      }
+    }
   </style>
 </head>
-
 <body>
+  <div class="page">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <header>
+          <h1>Michael Tang</h1>
+          <p class="subtitle">Electrical &amp; Computer Engineer</p>
+          <p class="intro">
+            I build hardware systems across computer architecture, VLSI, and ASIC implementation,
+            with interests in microarchitecture, physical design, and ML for EDA.
+          </p>
+        </header>
 
-<div class="container">
+        <nav class="nav" aria-label="Section navigation">
+          <ul>
+            <li><a href="#about" class="nav-link active">About</a></li>
+            <li><a href="#experience" class="nav-link">Experience</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+          </ul>
+        </nav>
+      </div>
 
-  <!-- Header -->
-  <h1>Michael Tang</h1>
-  <p>
-    Electrical & Computer Engineering student focused on computer architecture,
-    VLSI, and hardware systems.
-  </p>
+      <div class="socials">
+        <a href="resume.pdf" target="_blank" rel="noreferrer">Résumé</a>
+        <a href="https://github.com/yourgithub" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://linkedin.com/in/michael-tang-32861025a" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href="mailto:micdtang2008@gmail.com">Email</a>
+      </div>
+    </aside>
 
-  <div class="links">
-    <a href="#">Resume</a>
-    <a href="#">GitHub</a>
-    <a href="#">LinkedIn</a>
-    <a href="mailto:micdtang2008@gmail.com">Email</a>
+    <main class="content">
+      <section id="about" class="about">
+        <h2 class="section-heading">About</h2>
+        <p>
+          I’m a computer engineering student focused on <strong>computer architecture</strong>,
+          <strong>VLSI</strong>, and <strong>hardware-software systems</strong>. I enjoy working
+          across the stack, from RTL and microarchitecture to physical implementation and timing analysis.
+        </p>
+        <p>
+          Currently, I’m involved in research spanning <strong>ASIC physical design</strong>,
+          <strong>hardware accelerators</strong>, and <strong>branch prediction</strong> for open-source
+          out-of-order RISC-V cores. I’m especially interested in building systems that are both
+          technically rigorous and practically useful.
+        </p>
+        <p>
+          I’ve also worked on projects in <strong>digital IC design</strong>, <strong>EDA tooling</strong>,
+          and <strong>ML-based RTL timing estimation</strong>. A number of projects are private or
+          under NDA, but I’m happy to discuss the technical work in interviews.
+        </p>
+      </section>
+
+      <section id="experience">
+        <h2 class="section-heading">Experience</h2>
+        <div class="list">
+          <article class="card">
+            <div class="card-date">2025 — Present</div>
+            <div class="card-body">
+              <h3>UCSB Novel Electronic Device &amp; Circuits Lab</h3>
+              <span class="role">VLSI Undergraduate Researcher, Hardware Accelerator VLSI</span>
+              <p>
+                Contributing to physical implementation and tapeout of a 2 mm² Rocket + RoCC-coupled
+                accelerator, including floorplanning, power-grid generation, and signoff checks.
+                Automated power-strap generation in Innovus using Python and TCL, reducing spacing
+                violations by 90%, and performed DRC/LVS signoff in TSMC 28nm with Calibre.
+              </p>
+              <div class="tags">
+                <span class="tag">Innovus</span>
+                <span class="tag">Calibre</span>
+                <span class="tag">Python</span>
+                <span class="tag">TCL</span>
+                <span class="tag">TSMC 28nm</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-date">2024 — Present</div>
+            <div class="card-body">
+              <h3>UCSB ArchLab</h3>
+              <span class="role">Microarchitecture Undergraduate Researcher, CPU Microarchitecture</span>
+              <p>
+                Contributed to an open-source RV64GC superscalar out-of-order core in SystemVerilog,
+                focusing on branch prediction microarchitecture. Managed the design of a gshare branch
+                predictor to improve prediction accuracy while maintaining cross-slice dependencies.
+              </p>
+              <div class="tags">
+                <span class="tag">SystemVerilog</span>
+                <span class="tag">RISC-V</span>
+                <span class="tag">Branch Prediction</span>
+                <span class="tag">Microarchitecture</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-date">2025</div>
+            <div class="card-body">
+              <h3>UCSB Power Electronics and Microsystems Lab</h3>
+              <span class="role">Undergraduate Student Researcher, Power IC Design</span>
+              <p>
+                Assisted in the design and verification of a current-balanced integrated dual-inductor
+                hybrid Dickson converter, reducing converter volume by 38%. Analyzed power and current
+                behavior across duty cycles and verified circuit functionality using Cadence Virtuoso
+                and LTSpice.
+              </p>
+              <div class="tags">
+                <span class="tag">Virtuoso</span>
+                <span class="tag">LTSpice</span>
+                <span class="tag">Power IC</span>
+                <span class="tag">Analog Design</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <a class="resume-link" href="resume.pdf" target="_blank" rel="noreferrer">
+          View Full Résumé
+        </a>
+      </section>
+
+      <section id="projects">
+        <h2 class="section-heading">Projects</h2>
+        <div class="list">
+          <article class="card">
+            <div class="card-date">2026</div>
+            <div class="card-body">
+              <h3>ML-Based Fine-Grained RTL Timing Estimation</h3>
+              <p>
+                Built an ML-based pipeline to predict register-level timing using Yosys and OpenSTA APIs.
+                Engineered a LambdaMART ranking model achieving 78.2% COVR in identifying the top 5%
+                most timing-critical registers across 20 designs, and attained &lt;7.5% error in
+                predicting global Worst Negative Slack through bit-to-signal aggregation and
+                fine-tuned XGBoost models.
+              </p>
+              <div class="tags">
+                <span class="tag">Yosys</span>
+                <span class="tag">OpenSTA</span>
+                <span class="tag">XGBoost</span>
+                <span class="tag">LambdaMART</span>
+                <span class="tag">ML for EDA</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-date">2025</div>
+            <div class="card-body">
+              <h3>Optimized Chip Clock Tree in IBM 130nm</h3>
+              <p>
+                Designed a clock distribution tree for a 5 mm² chip powering 100,000 flip-flops.
+                Optimized clock jitter and rise time to within 100 ps through buffer sizing, spacing,
+                and metal layer selection, and validated performance with 1,000 Monte Carlo simulations
+                across multiple power domains.
+              </p>
+              <div class="tags">
+                <span class="tag">HSpice</span>
+                <span class="tag">Clock Tree Synthesis</span>
+                <span class="tag">Monte Carlo</span>
+                <span class="tag">IBM 130nm</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-date">2024</div>
+            <div class="card-body">
+              <h3>16-Point FFT Processor in SkyWater 130nm</h3>
+              <p>
+                Collaborated on the design of a 16-point digital CMOS FFT processor using butterfly
+                architecture for real and imaginary inputs. Verified functionality in Cadence Virtuoso
+                ADE and optimized transistor sizing and adder structure to reduce delay to 5 ns.
+              </p>
+              <div class="tags">
+                <span class="tag">Cadence Virtuoso</span>
+                <span class="tag">Digital IC Design</span>
+                <span class="tag">FFT</span>
+                <span class="tag">SkyWater 130nm</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <p class="footer-note">
+          Inspired by a split-layout portfolio pattern similar to Brittany Chiang’s site, but adapted
+          here into a simple single-file version for your own content. :contentReference[oaicite:0]{index=0}
+        </p>
+      </section>
+    </main>
   </div>
 
-  <!-- About -->
-  <h2>About</h2>
-  <p>
-    I’m interested in processor design, hardware acceleration, and physical design.
-    My work spans RTL design, microarchitecture, and ASIC implementation.
-  </p>
+  <script>
+    const sections = document.querySelectorAll("main section[id]");
+    const navLinks = document.querySelectorAll(".nav-link");
 
-  <!-- Experience -->
-  <h2>Experience</h2>
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            navLinks.forEach((link) => link.classList.remove("active"));
+            const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+            if (active) active.classList.add("active");
+          }
+        });
+      },
+      {
+        rootMargin: "-35% 0px -55% 0px",
+        threshold: 0
+      }
+    );
 
-  <div class="project">
-    <span class="project-title">VLSI Researcher — UCSB</span>
-    <span class="date">2025–Present</span>
-    <p>
-      Worked on physical design and tapeout of a Rocket + RoCC accelerator,
-      including power grid generation and signoff verification.
-    </p>
-  </div>
-
-  <div class="project">
-    <span class="project-title">Microarchitecture Researcher — ArchLab</span>
-    <span class="date">2024–Present</span>
-    <p>
-      Contributed to an RV64GC out-of-order core and designed a gshare branch predictor.
-    </p>
-  </div>
-
-  <!-- Projects -->
-  <h2>Projects</h2>
-
-  <div class="project">
-    <span class="project-title">ML-Based RTL Timing Estimation</span>
-    <span class="date">2026</span>
-    <p>
-      Built an ML pipeline to predict timing-critical registers with &lt;7.5% WNS error.
-    </p>
-  </div>
-
-  <div class="project">
-    <span class="project-title">Clock Tree Optimization</span>
-    <span class="date">2025</span>
-    <p>
-      Designed and optimized a clock distribution network for 100k flip-flops.
-    </p>
-  </div>
-
-  <!-- Footer -->
-  <h2>Notes</h2>
-  <p>
-    Some projects are under NDA and cannot be publicly shared.
-  </p>
-
-</div>
-
+    sections.forEach((section) => observer.observe(section));
+  </script>
 </body>
 </html>
