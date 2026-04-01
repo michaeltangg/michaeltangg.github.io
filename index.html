@@ -15,7 +15,6 @@
       --muted: #475569;
       --light: #94a3b8;
       --border: #e2e8f0;
-      --card: #ffffff;
       --link: #0f172a;
       --max-width: 1200px;
       --left-col: 42%;
@@ -225,6 +224,15 @@
       color: var(--text);
     }
 
+    .card-body h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .card-body h3 a:hover {
+      text-decoration: underline;
+    }
+
     .card-body .role {
       display: block;
       color: var(--muted);
@@ -262,6 +270,23 @@
       color: var(--text);
       font-weight: 600;
       font-size: 0.95rem;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .project-links a {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .project-links a:hover {
+      color: var(--text);
     }
 
     .footer-note {
@@ -348,7 +373,7 @@
       <div class="socials">
         <a href="resume.pdf" target="_blank" rel="noreferrer">Résumé</a>
         <a href="https://linkedin.com/in/michael-tang-32861025a" target="_blank" rel="noreferrer">LinkedIn</a>
-        <a href="mailto:micdtang@gmail.com">Email</a>
+        <a href="mailto:micdtang2008@gmail.com">Email</a>
       </div>
     </aside>
 
@@ -356,7 +381,7 @@
       <section id="about" class="about">
         <h2 class="section-heading">About</h2>
         <p>
-          I’m an electrical & computer engineering student focused on <strong>computer architecture</strong>,
+          I’m a computer engineering student focused on <strong>computer architecture</strong>,
           <strong>VLSI</strong>, and <strong>hardware-software systems</strong>. I enjoy working
           across the stack, from RTL and microarchitecture to physical implementation and timing analysis.
         </p>
@@ -367,10 +392,8 @@
           technically rigorous and practically useful.
         </p>
         <p>
-          I’ve also worked on projects in <strong>digital IC design</strong>, <strong>EDA tooling</strong>,
-          and <strong>ML-based RTL timing estimation</strong>. A number of projects are currently private or
-          under NDA, though I’m always happy to chat about the technical challenges, design decisions, 
-          and my experience.
+          Some projects aren’t publicly available due to NDA and private repository restrictions,
+          though I’m always happy to chat about the technical challenges, design decisions, and what I learned.
         </p>
       </section>
 
@@ -380,13 +403,14 @@
           <article class="card">
             <div class="card-date">2025 — Present</div>
             <div class="card-body">
-              <h3>UCSB Novel Electronic Device &amp; Circuits Lab</h3>
+              <h3>
+                <a href="https://sites.google.com/site/strukov/people" target="_blank" rel="noreferrer">
+                  UCSB Novel Electronic Device &amp; Circuits Lab
+                </a>
+              </h3>
               <span class="role">VLSI Undergraduate Researcher, Hardware Accelerator VLSI</span>
               <p>
-                Contributing to physical implementation and tapeout of a 2 mm² Rocket + RoCC-coupled
-                accelerator, including floorplanning, power-grid generation, and signoff checks.
-                Automated power-strap generation in Innovus using Python and TCL, reducing spacing
-                violations by 90%, and performed DRC/LVS signoff in TSMC 28nm with Calibre.
+                Contributed to the physical design and tapeout of a 2 mm² Rocket + RoCC accelerator using the Chipyard flow. Automated power-strap generation in Innovus with Python and TCL, reducing spacing violations by 90%, and performed DRC/LVS signoff in Calibre.
               </p>
               <div class="tags">
                 <span class="tag">Chipyard</span>
@@ -394,7 +418,6 @@
                 <span class="tag">Calibre</span>
                 <span class="tag">Physical Design</span>
                 <span class="tag">TSMC 28nm</span>
-                <span class="tag">Python</span>
               </div>
             </div>
           </article>
@@ -402,12 +425,14 @@
           <article class="card">
             <div class="card-date">2024 — Present</div>
             <div class="card-body">
-              <h3>UCSB ArchLab</h3>
+              <h3>
+                <a href="https://www.arch.cs.ucsb.edu/" target="_blank" rel="noreferrer">
+                  UCSB ArchLab
+                </a>
+              </h3>
               <span class="role">Microarchitecture Undergraduate Researcher, CPU Microarchitecture</span>
               <p>
-                Contributed to an open-source RV64GC superscalar out-of-order core in SystemVerilog,
-                focusing on branch prediction microarchitecture. Managed the design of a gshare branch
-                predictor to improve prediction accuracy while maintaining cross-slice dependencies.
+                Contributed to an open-source RV64GC superscalar out-of-order core in SystemVerilog, with a focus on branch prediction. Designed a gshare predictor to improve accuracy while preserving cross-slice dependencies.
               </p>
               <div class="tags">
                 <span class="tag">SystemVerilog</span>
@@ -421,13 +446,14 @@
           <article class="card">
             <div class="card-date">2025</div>
             <div class="card-body">
-              <h3>UCSB Power Electronics and Microsystems Lab</h3>
+              <h3>
+                <a href="https://energy.ece.ucsb.edu/" target="_blank" rel="noreferrer">
+                  UCSB Power Electronics and Microsystems Lab
+                </a>
+              </h3>
               <span class="role">Undergraduate Student Researcher, Power IC Design</span>
               <p>
-                Assisted in the design and verification of a current-balanced integrated dual-inductor
-                hybrid Dickson converter, reducing converter volume by 38%. Analyzed power and current
-                behavior across duty cycles and verified circuit functionality using Cadence Virtuoso
-                and LTSpice.
+                Assisted in the design and verification of an integrated dual-inductor hybrid Dickson converter. Analyzed power and current behavior across duty cycles and verified performance in Cadence Virtuoso and LTSpice.
               </p>
               <div class="tags">
                 <span class="tag">Virtuoso</span>
@@ -439,7 +465,7 @@
           </article>
         </div>
 
-        <a class="resume-link" href="Michael_Tang_Resume.pdf" target="_blank" rel="noreferrer">
+        <a class="resume-link" href="resume.pdf" target="_blank" rel="noreferrer">
           View Full Résumé
         </a>
       </section>
@@ -450,14 +476,13 @@
           <article class="card">
             <div class="card-date">2026</div>
             <div class="card-body">
-              <h3>ML-Based Fine-Grained RTL Timing Estimation</h3>
+              <h3>RTL Timing Estimation</h3>
               <p>
-                Built an ML-based pipeline to predict register-level timing using Yosys and OpenSTA APIs.
-                Engineered a LambdaMART ranking model achieving 78.2% COVR in identifying the top 5%
-                most timing-critical registers across 20 designs, and attained &lt;7.5% error in
-                predicting global Worst Negative Slack through bit-to-signal aggregation and
-                fine-tuned XGBoost models.
+                Built an ML pipeline for register-level timing prediction using Yosys and OpenSTA. Achieved 78.2% COVR in ranking the top 5% most timing-critical registers and under 7.5% error in global WNS prediction.
               </p>
+              <div class="project-links">
+                <a href="https://arxiv.org/pdf/2403.18453" target="_blank" rel="noreferrer">Paper</a>
+              </div>
               <div class="tags">
                 <span class="tag">Yosys</span>
                 <span class="tag">OpenSTA</span>
@@ -469,37 +494,11 @@
           </article>
 
           <article class="card">
-            <div class="card-date">2026</div>
-            <div class="card-body">
-              <h3>LLM-Guided Rectangle Packing Solver for EDA</h3>
-              <p>
-                Developed and benchmarked a hybrid packing solver combining Monte Carlo Tree Search,
-                CP-SAT, genetic algorithms, and simulated annealing for constrained rectangle-placement
-                problems. Designed an agent-guided search pipeline where an LLM proposed candidate
-                placement orders and rotations, while exact spatial validation was delegated to MaxRects
-                and CP-SAT backends. The final hybrid Guided MCTS/CP-SAT system achieved a 95.0%
-                completion rate with 1.6981s average runtime, substantially improving over standalone
-                heuristic search while preserving strong solve quality.
-              </p>
-              <div class="tags">
-                <span class="tag">MCTS</span>
-                <span class="tag">CP-SAT</span>
-                <span class="tag">MaxRects</span>
-                <span class="tag">LLM Agents for EDA</span>
-                <span class="tag">Search Optimization</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="card">
             <div class="card-date">2025</div>
             <div class="card-body">
-              <h3>Optimized Chip Clock Tree in IBM 130nm</h3>
+              <h3>Clock Tree</h3>
               <p>
-                Designed a clock distribution tree for a 5 mm² chip powering 100,000 flip-flops.
-                Optimized clock jitter and rise time to within 100 ps through buffer sizing, spacing,
-                and metal layer selection, and validated performance with 1,000 Monte Carlo simulations
-                across multiple power domains.
+                Designed and optimized a clock tree for a 5 mm² chip with 100,000 flip-flops. Met a 100 ps jitter and rise-time target through buffer sizing, spacing, and metal-layer optimization, validated with Monte Carlo simulation.
               </p>
               <div class="tags">
                 <span class="tag">HSpice</span>
@@ -513,11 +512,9 @@
           <article class="card">
             <div class="card-date">2024</div>
             <div class="card-body">
-              <h3>16-Point FFT Processor in SkyWater 130nm</h3>
+              <h3>FFT Processor</h3>
               <p>
-                Collaborated on the design of a 16-point digital CMOS FFT processor using butterfly
-                architecture for real and imaginary inputs. Verified functionality in Cadence Virtuoso
-                ADE and optimized transistor sizing and adder structure to reduce delay to 5 ns.
+                Designed a 16-point CMOS FFT processor using butterfly architecture for complex inputs. Verified functionality in Cadence Virtuoso ADE and reduced delay to 5 ns through transistor sizing and adder optimization.
               </p>
               <div class="tags">
                 <span class="tag">Cadence Virtuoso</span>
@@ -527,11 +524,24 @@
               </div>
             </div>
           </article>
-        </div>
 
-        <p class="footer-note">
-          Inspired by a split-layout portfolio website by Brittany Chiang.
-        </p>
+          <article class="card">
+            <div class="card-date">2026</div>
+            <div class="card-body">
+              <h3>Rectangle Packing</h3>
+              <p>
+                Built and benchmarked a hybrid rectangle-packing solver combining MCTS, CP-SAT, and LLM-guided search. The final Guided MCTS/CP-SAT system achieved a 95.0% completion rate with 1.70s average runtime.
+              </p>
+              <div class="tags">
+                <span class="tag">MCTS</span>
+                <span class="tag">CP-SAT</span>
+                <span class="tag">MaxRects</span>
+                <span class="tag">LLM Agents</span>
+                <span class="tag">Search Optimization</span>
+              </div>
+            </div>
+          </article>
+        </div>
       </section>
     </main>
   </div>
