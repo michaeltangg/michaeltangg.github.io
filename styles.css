@@ -181,6 +181,16 @@ section + section {
   font-weight: 800;
 }
 
+.page-heading {
+  display: block;
+  margin: 0 0 32px;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text);
+  font-weight: 800;
+}
+
 .about p {
   margin: 0 0 18px;
   color: var(--muted);
