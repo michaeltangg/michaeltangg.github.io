@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Michael Tang</title>
+  <title>Experience — Michael Tang</title>
   <meta
     name="description"
-    content="Michael Tang — Electrical and Computer Engineering student focused on computer architecture, VLSI, and hardware systems."
+    content="All experience by Michael Tang — computer architecture, VLSI, and hardware systems research."
   />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -25,9 +25,7 @@
 
         <nav class="nav" aria-label="Section navigation">
           <ul>
-            <li><a href="#about" class="nav-link active">About</a></li>
-            <li><a href="#experience" class="nav-link">Experience</a></li>
-            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li><a href="index.html" class="nav-link active">&larr; Back to Home</a></li>
           </ul>
         </nav>
       </div>
@@ -59,27 +57,8 @@
     </aside>
 
     <main class="content">
-      <section id="about" class="about">
-        <h2 class="section-heading">About</h2>
-        <p>
-          I’m an electrical & computer engineering student focused on <strong>computer architecture</strong>,
-          <strong>VLSI</strong>, and <strong>hardware-software systems</strong>. I enjoy working
-          across the stack, from RTL and microarchitecture to physical implementation and timing analysis.
-        </p>
-        <p>
-          Currently, I’m involved in research spanning <strong>ASIC physical design</strong>,
-          <strong>hardware accelerators</strong>, and <strong>branch prediction</strong> for open-source
-          out-of-order RISC-V cores. I’m especially interested in building systems that are both
-          technically rigorous and practically useful.
-        </p>
-        <p>
-          Some projects aren’t currently available due to NDA and private repository restrictions,
-          though I’m always happy to chat about the technical challenges, design decisions, and what I learned.
-        </p>
-      </section>
-
       <section id="experience">
-        <h2 class="section-heading">Experience</h2>
+        <h2 class="page-heading">All Experience</h2>
         <div class="list">
           <article class="card">
             <div class="card-date">2025 — Present</div>
@@ -147,82 +126,35 @@
               </div>
             </div>
           </article>
-        </div>
-
-        <a class="resume-link inline-link" href="experiences.html">
-          View All Experiences
-          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M7 17L17 7"></path>
-            <path d="M7 7h10v10"></path>
-          </svg>
-        </a>
-      </section>
-
-      <section id="projects">
-        <h2 class="section-heading">Projects</h2>
-        <div class="list">
-          <article class="card">
-            <div class="card-date">2026</div>
-            <div class="card-body">
-              <h3>RTL Timing Estimation</h3>
-              <p>
-                Built an ML pipeline for register-level timing prediction based off RTL-Timer using Yosys and OpenSTA. Achieved 78.2% COVR in ranking the top 5% most timing-critical registers and under 7.5% error in global WNS prediction.
-              </p>
-              <div class="project-links">
-                <a class="inline-link" href="https://arxiv.org/pdf/2403.18453" target="_blank" rel="noreferrer">
-                  RTL-Timer
-                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M10 13a5 5 0 0 0 7.07 0l1.41-1.41a5 5 0 0 0-7.07-7.07L10.7 5.23"></path>
-                    <path d="M14 11a5 5 0 0 0-7.07 0L5.52 12.41a5 5 0 1 0 7.07 7.07l.71-.71"></path>
-                  </svg>
-                </a>
-              </div>
-              <div class="tags">
-                <span class="tag">Yosys</span>
-                <span class="tag">OpenSTA</span>
-                <span class="tag">XGBoost</span>
-                <span class="tag">LambdaMART</span>
-                <span class="tag">ML for EDA</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-date">2026</div>
-            <div class="card-body">
-              <h3>Rectangle Packing</h3>
-              <p>
-                Built and benchmarked a hybrid rectangle-packing solver combining MCTS, CP-SAT, and LLM-guided search. The final Guided MCTS/CP-SAT system achieved a 95.0% completion rate with 1.70s average runtime.
-              </p>
-              <div class="tags">
-                <span class="tag">MCTS</span>
-                <span class="tag">CP-SAT</span>
-                <span class="tag">MaxRects</span>
-                <span class="tag">LLM Agents for EDA</span>
-                <span class="tag">Search Optimization</span>
-              </div>
-            </div>
-          </article>
 
           <article class="card">
             <div class="card-date">2025</div>
             <div class="card-body">
-              <h3>Clock Tree</h3>
+              <h3>
+                <a class="inline-link" href="https://energy.ece.ucsb.edu/" target="_blank" rel="noreferrer">
+                  UCSB Power Electronics and Microsystems Lab
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M7 17L17 7"></path>
+                    <path d="M7 7h10v10"></path>
+                  </svg>
+                </a>
+              </h3>
+              <span class="role">Undergraduate Student Researcher, Power IC Design</span>
               <p>
-                Designed and optimized a clock tree for a 5 mm² chip with 100,000 flip-flops. Met a 100 ps jitter and rise-time target through buffer sizing, spacing, and metal-layer optimization, validated with Monte Carlo simulation.
+                Assisted in the design and verification of an integrated dual-inductor hybrid Dickson converter. Analyzed power and current behavior across duty cycles and verified performance in Cadence Virtuoso and LTSpice.
               </p>
               <div class="tags">
-                <span class="tag">HSpice</span>
-                <span class="tag">Clock Tree Synthesis</span>
-                <span class="tag">Monte Carlo</span>
-                <span class="tag">IBM 130nm</span>
+                <span class="tag">Virtuoso</span>
+                <span class="tag">LTSpice</span>
+                <span class="tag">Power IC</span>
+                <span class="tag">Analog Design</span>
               </div>
             </div>
           </article>
         </div>
 
-        <a class="resume-link inline-link" href="projects.html">
-          View All Projects
+        <a class="resume-link inline-link" href="Michael_Tang_Resume.pdf" target="_blank" rel="noreferrer">
+          View Full Résumé
           <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M7 17L17 7"></path>
             <path d="M7 7h10v10"></path>
@@ -231,7 +163,5 @@
       </section>
     </main>
   </div>
-
-  <script src="script.js" defer></script>
 </body>
 </html>
