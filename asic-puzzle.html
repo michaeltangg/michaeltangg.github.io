@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASIC Reverse-Engineering Puzzle — Michael Tang</title>
+  <meta
+    name="description"
+    content="Writeup on reverse engineering a Jane Street ASIC puzzle from a GDS layout — netlist extraction, behavioral validation, and gate-level recovery of the acceptance condition."
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page page--writeup">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <header>
+          <h1>Michael Tang</h1>
+          <p class="subtitle">Electrical &amp; Computer Engineering<br />@ Carnegie Mellon University</p>
+        </header>
+        <nav class="nav" aria-label="Section navigation">
+          <ul>
+            <li><a href="index.html" class="nav-link active">&larr; Back to Home</a></li>
+          </ul>
+        </nav>
+        <nav class="nav" aria-label="Section navigation">
+          <ul>
+            <li><a href="projects.html" class="nav-link active">&larr; Back to Projects</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="socials">
+        <a href="Michael_Tang_Resume.pdf" target="_blank" rel="noreferrer" aria-label="Resume">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9z"></path>
+            <path d="M14 2v7h7"></path>
+            <path d="M9 13h6"></path>
+            <path d="M9 17h6"></path>
+            <path d="M9 9h1"></path>
+          </svg>
+        </a>
+
+        <a href="https://linkedin.com/in/michael-tang-32861025a" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M4.98 3.5A2.48 2.48 0 1 0 5 8.46 2.48 2.48 0 0 0 4.98 3.5ZM3 9h4v12H3Zm7 0h3.83v1.64h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.09V21h-4v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.95V21h-4Z"/>
+          </svg>
+        </a>
+
+        <a href="mailto:micdtang@gmail.com" aria-label="Email">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+            <path d="M3 7l9 6 9-6"></path>
+          </svg>
+        </a>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section id="writeup">
+        <article class="writeup">
+          <h1>ASIC Reverse-Engineering Puzzle</h1>
+
+          <h2>Intro</h2>
+          <p>
+            The goal of this puzzle, created by
+            <a href="https://github.com/janestreet/asic-puzzle-2026" target="_blank" rel="noreferrer">Jane Street</a>,
+            is to extract the functionality of a circuit by reverse engineering the circuit's layout. Provided is the
+            final mask of the circuit (<code>puzzle.gds</code>) along with a waveform of example inputs and their
+            corresponding outputs (<code>example_inputs.vcd</code>). None of the provided examples flip the
+            <code>[success]</code> output high, meaning the logic driving <code>[success]</code> has to be recovered
+            from the layout itself.
+          </p>
+          <p>
+            Also included is an annotated hint image (<code>layout.png</code>) marking a region of the design as an
+            "output generator". The output generator is hinted to not be necessary when reverse engineering the core
+            logic, but will eventually be needed to retrieve the hidden message. This splits the problem into two
+            mostly-independent halves: first recover the condition that drives <code>[success]</code> high, then
+            figure out what <code>[out]</code> produces once it does.
+          </p>
+
+          <h2>Warmup</h2>
+          <p>
+            Included alongside the main puzzle is a scaled down warm-up puzzle aimed to help us acclimate to the tools
+            and environment we will be using. The warm-up includes the source RTL in Verilog, a synthesized netlist,
+            a placed-and-routed DEF, and the final layout. Using these as ground truth, we can build a set of
+            general-purpose scripts to reverse engineer the puzzle and verify each technique against the warm-up
+            before trusting it on the real thing. The pipeline has three stages:
+          </p>
+
+          <h3>1. Extract a gate-level netlist from the raw GDS layout.</h3>
+          <p>
+            KLayout allows us to import the raw GDS file and view the different metals layers and cells that comprise
+            the circuit. While helpful in understanding the connectivity between <code>[success]</code> logic and the
+            output generator, we are more focused on Klayout's <code>LayoutToNetlist</code> tool that treats standard
+            cells as black boxes and extracts the netlist purely from routing metals and pin labels.
+          </p>
+
+          <h3>2. Validate the netlist against the warm-up RTL/DEF.</h3>
+          <p>
+            Since the warmup already includes the layout's associated netlist and RTL, we can verify
+            <code>LayoutToNetlist</code> against that ground truth. The extracted per-instance celltype, placement, and
+            pin&rarr;net are matched bijectively against DEF <code>(celltype, x, y) &rarr; instname</code>, and netlist
+            <code>instname &rarr; {pin:netname}</code> instances. Exact set-equality between the extracted and
+            reference netlist proves our structural isomorphism.
+          </p>
+          <p>
+            Behavioral isomorphism is verified using Icarus Verilog's <code>iverilog</code> + <code>vvp</code> by
+            driving identical inputs into both DUTs side by side. After each posedge + 1 settle,
+            <code>S_reference !== S_extracted</code> is checked to prove the extracted netlist is behaviorally
+            identical.
+          </p>
+
+          <h3>3. Reverse-trace the gate-level logic to build up the driving condition.</h3>
+          <p>
+            The verified netlist is passed through Yosys ABC to collapse the Skywater130 cells into logic primitives
+            (AND/OR/XOR/NOT/MUX/DFF). This simplifies the topology-walking logic to avoid stdcell library special
+            cases. For each flop, we walk backwards from the <code>D</code> input pin through combinational cells
+            only, stopping at the first flop or primary input we hit, giving us a per-flop dependency map.
+          </p>
+          <p>
+            In the warmup flop dependency map, we find that all flops have at most one predecessor flop that feeds
+            into it. Furthermore, when we start the walk at the chain heads (flops whose <code>D</code> input depends
+            on a top-level primary and no other flop), we find exactly 2 chains, each having a length of 8. From this,
+            it is implied that the logical structure of the circuit is comprised of two 8-bit shift registers. To find
+            the actual driving condition of <code>S</code>, we exhaustively enumerate through all
+            <code>256 &times; 256 = 65536</code> possible <code>(a, b)</code> pairs where <code>a</code> and
+            <code>b</code> are two 8-bit integers to find <code>S = 1</code> when <code>a + b == 496</code>.
+            Exhaustive search is used here because of the relatively small state space. For the actual puzzle, that
+            approach wouldn't be practical and a different approach will be needed.
+          </p>
+
+          <h2>Moving to the real puzzle</h2>
+          <p>
+            For the real puzzle, we don't have the same ground truth RTL or netlists provided, with only
+            <code>example_inputs.vcd</code> as a reference to verify our extracted netlist is accurate. Similar to the
+            approach in the warmup puzzle, the goal is to verify that our extracted netlist is behaviorally identical
+            to the example inputs/outputs provided. We instantiate the top module of
+            <code>extracted_puzzle.v</code> and replay the same recorded input sequence and check that every input
+            signal change becomes a <code>&lt;signal&gt; = &lt;value&gt;;</code> assignment at the matching delay to
+            confirm this. While we are able to confirm that the extraction is at the very least identical in behavior
+            to the provided input, <code>success</code> never toggles high in any of the example inputs, requiring us
+            to continue working on the netlist's structure directly.
+          </p>
+
+          <h2>Netlist algebra: recovering the logic</h2>
+          <p>
+            Again, similar to the warmup pipeline, we reverse-trace the flop-dependency from the
+            <code>success</code> output. There are slight differences between the walk in the warmup and the walk in
+            the puzzle. In the puzzle, we are operating directly on the extracted puzzle from
+            <code>LayoutToNetlist</code> instead of passing the netlist through Yosys ABC. The abc-resynthesized JSON
+            introduced a "clk as data" artifact where the clock signal was folded into combinational logic
+            (<code>net200 = net193 AND clk</code>) which is not found in the raw netlist design. The original benefit
+            of using Yosys was the ability to collapse ~66 distinct cell types down to 5 uniform primitives along with
+            the ability to use built-in tools like <code>yosys-smtbmc</code>. We are able to avoid this artifact by
+            walking the raw netlist, but this comes at the cost of increasing complexity when we start analyzing.
+            Since the warmup was a synchronous design that never crosses a time-domain, the synthesized netlist is
+            acyclic by construction. The puzzle's success cone is instead 56 flops deep with heavy reconvergent
+            fan-in, so each walk carries a per-flop visited set and hard recursion cap to avoid re-traversing shared
+            subgraphs exponentially.
+          </p>
+          <p>
+            Since extraction scrubs all the names in the design, the topology of the circuit becomes ambiguous. For
+            example, a chain of flops in the dependency graph could either be a shift register or a ripple counter
+            since the distinction lies in the combinational logic between the stages. The walk was sufficient in
+            describing the connectivity of the circuit, but not enough to describe the individual function of each
+            flop. To fix this, we observe the internal state directly. The sky130 cell models generated from the
+            liberty hold flop state in an internal <code>reg IQ</code>, so a testbench can reach a flop's state
+            hierarchically by instance name (<code>dut._inst_13_.IQ</code>). We use iverilog to instantiate the
+            extracted netlist against the cell models, drive <code>rst_n</code>/<code>enable</code>/<code>I</code> and
+            print the selected flops' state on every cycle.
+          </p>
+          <p>
+            Using these flop states, we uncover several logical structures that comprise the circuit. The entire
+            circuit is comprised of 92 flops. Analyzing the flop dependency graph further, we find a minimal closed
+            subgraph of 9 flops: flops whose behavior is fully determined by themselves plus
+            <code>clk</code>/<code>enable</code>/<code>rst_n</code>. Additionally, these 9 flops comprise the "core"
+            of our design as every single other flop depends on these 9 flops. All together, the 92 flops are made up
+            of 9 core, 69 data, 13 output generator, and the final <code>success</code> flop.
+          </p>
+          <p>
+            Watching the switching behavior of the 9 core flops, we find a two-digit base-11 counter with 121 states.
+            These 9 flops are split into the 4 low digits, 4 high digits, and a sticky latch. The core's state starts
+            at <code>cycle 0: low={0,0,0,1} high={0,0,0,0} hub=0</code> and increments until
+            <code>cycle 119: low={1,0,1,0} high={1,0,1,0} hub=0</code>. Cycle 119 represents (10,10), which is 120 in
+            base 11, the counter's terminal state. On <code>cycle 120: low={0,0,0,0} high={0,0,0,0} hub=1</code>, the
+            counter has wrapped back to zero and the latch has fired, freezing it there for the rest of the run and
+            giving us our 121-state counter.
+          </p>
+          <p>
+            Having reverse-engineered the "core" logic, we turn to the other 69 flops. Watching those flops with
+            respect to the 121-state counter, we find within those 69 flops: 11 "keys" with each key having a 2-bit
+            counter that saturates at 3. The 11 keys correspond with the cycle <code>i mod 11</code>, each key being
+            visited 11 times: key 4 comes around at cycles 4, 15, 26, 37, 48, 59, 70, 81, 92, 103, 114. Each time the
+            counter points at a key, input <code>I</code> is sampled. If <code>I</code> is high on that cycle, the key
+            is "pressed", incrementing the 2-bit counter by 1. If <code>I</code> is low, nothing happens to the
+            counter. If both MSB and LSB of the counter are high, the counter is saturated and freezes instead of
+            rolling back to 0.
+          </p>
+          <p>
+            <code>success</code>'s direct fan-in consists of 57 flops: <code>success</code> itself, <code>hub</code>,
+            <code>_inst_51_</code>, and the 54 flops that make up the acceptance condition. <code>_inst_51_</code>
+            exists as a one-cycle-delayed sticky copy of <code>hub</code> and exists to keep the self-hold term alive.
+            The 54 flops comprising the acceptance condition break down as 2 sets of 11 2-bit saturating counters, an
+            8-bit binary counter of total key presses, and 2 extra flops. Of the remaining 14 of the 69 flops, 12 form
+            a shift register with the last 2 settling to a fixed state regardless of input. At this point in the
+            puzzle, we have uncovered the full structure of the circuit, but only understand the function of one set
+            of 11 2-bit saturating counters and the 8-bit binary counter.
+          </p>
+
+          <h2>Solving for the input sequence</h2>
+          <p>
+            To recover the acceptance condition, we symbolically derive the flop's next state algebraically rather
+            than by simulation. Starting at the <code>D</code> pin, we walk the netlist backwards, substituting each
+            cell's liberty function for the cell it crosses and stopping at flop outputs and top-level inputs.
+            Converting that function to disjunctive normal form tells us whether a flop must be 1 or 0. For
+            <code>success</code>, this ends up being 25 literals that must be 1 and 29 that must be 0. Now that we
+            have the structure that satisfies <code>success</code>, what's left is to search for the correct input
+            that turns the <code>success</code> output high. <code>hub</code> only becomes a visible input to
+            <code>success</code>'s own <code>D</code> formula one cycle after it fires, so the unroll needs 121
+            cycles, not the 120 the counter period alone would suggest. While we were able to brute-force the warmup
+            by exhaustive enumeration, that option isn't available here as the input space is 2<sup>121</sup>
+            compared to the 2<sup>16</sup> in the warmup.
+          </p>
+          <p>
+            Before handing this off to a solver, we build a cycle-accurate simulator in Python over the same
+            netlist. The simulator reuses the same structures and backwards walk, but evaluates cells with real
+            booleans instead of sympy expressions. The simulator is verified against the 312-posedge trace in
+            <code>example_inputs.vcd</code> to ensure our parsed netlist from the symbolic derivation is valid.
+          </p>
+          <p>
+            Our solver is the Z3 Satisfiability Modulo Theories (SMT) solver for Bounded Model Checking (BMC). The
+            benefit of BMC here is that it removes the time dimension of our sequential circuit by making 121 copies
+            of the circuit and wiring copy <code>t</code>'s flop outputs into copy <code>t + 1</code>'s flop inputs,
+            essentially unrolling it into a combinational one. Based off our symbolic derivation, we have our
+            bounding conditions: <code>hub</code> = 1, these 25 accumulator bits = 1, these 29 = 0. With our fully
+            unrolled circuit, this becomes a boolean satisfiability problem. The full unroll built in about three
+            seconds and solved in under one. When Z3 returns SAT, it also returns a model containing the values for
+            <code>I<sub>0</sub></code>, <code>I<sub>1</sub></code>, <code>I<sub>2</sub></code>&hellip;
+            <code>I<sub>120</sub></code> as well as the value for every internal net and every flop at each of the
+            121 cycles, effectively returning a complete snapshot of a valid execution of the circuit. The complete
+            snapshot is derivable by simulation making it redundant, but is occasionally useful for debugging,
+            allowing us to inspect what the model claims a specific bit was doing at cycle 24 and compare against a
+            concrete simulator. What's important here is we successfully retrieved a 121-bit input sequence that
+            flips <code>success</code> high.
+          </p>
+
+          <h2>Solution: The hidden message</h2>
+          <p>
+            To verify our input sequence and extract the hidden message, we drive the input sequence into the
+            extracted netlist under Icarus Verilog against our Skywater130 gate models. In the Icarus Verilog
+            simulator, once <code>success</code> goes high, the 8-bit <code>out</code> begins streaming out 8-bit
+            ASCII, one character per cycle. What we get is
+            <code>28 2A 20 54 57 4F 20 53 54 41 52 53 20 2A 29</code> or our hidden message:
+            <code>(* TWO STARS *)</code>. After outputting those 15 consecutive bytes, <code>out</code> emits
+            <code>0x00</code> from that cycle onwards and never restarts.
+          </p>
+          <p>
+            The 121-bit input sequence used to solve the puzzle turns out not to be an arbitrary key. Folded
+            row-major into an 11&times;11 grid, it is actually a solved Star Battle board. The base-11 counter is
+            what supplies the coordinates for each tile: at cycle <code>i</code> the design is looking at column
+            <code>i mod 11</code> of row <code>i div 11</code>, so each cycle addresses exactly one cell and the
+            "press" represents a star being placed. The 54 flops of the acceptance condition turn out to be the Star
+            Battle rules encoded into the circuit. 11 2-bit saturating counters, one per column, must each read
+            exactly 2, and another 11, one per region, must do the same. <code>_inst_346_</code> raises a flag on any
+            sweep not containing exactly two presses, which enforces the two stars per row rule. And
+            <code>_inst_23_</code>, fed by the 12-stage shift register, raises a flag whenever two stars touch
+            horizontally, vertically or diagonally, since in a row-major scan, a cell's neighbours sit 1, 10, 11 and
+            12 cycles behind it. The 8-bit press counter reading 22 is a redundant check over the whole puzzle.
+            Regions are the one piece of the puzzle not derivable from the counter. Since region membership is
+            hardcoded in the combinational logic, we can instead check it by pressing each of the 121 cells
+            individually and watching which region bit sets. We can verify this and see that the sizes of each
+            contiguous region, ranging from 4 to 28 cells, when added up, sum to 121.
+          </p>
+
+          <table class="grid-table">
+            <thead>
+              <tr>
+                <th>Region Map</th>
+                <th>Star Placement (<code>*</code> = star)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><pre>    0 1 2 3 4 5 6 7 8 9 10
+s0  G G G G G B B F E E A
+s1  G G K G G B F F E E A
+s2  G G K B B B B F F E A
+s3  G G K B J J J A F F A
+s4  K G K B J A A A A A A
+s5  K K K B J J J A H H H
+s6  B B B B B B J A H D D
+s7  B C C C J J J A H D D
+s8  B C C I A A A A H D D
+s9  B B C I I A A A H H H
+s10 B C C I A A A A A A A</pre></td>
+                <td><pre>    0 1 2 3 4 5 6 7 8 9 10
+s0  . . . . . . . * . * .
+s1  * . . . . * . . . . .
+s2  . . . . . . . * . * .
+s3  * . * . . . . . . . .
+s4  . . . . * . * . . . .
+s5  . . * . . . . . * . .
+s6  . . . . * . . . . . *
+s7  . * . . . . * . . . .
+s8  . . . * . . . . . . *
+s9  . . . . . * . . * . .
+s10 . * . * . . . . . . .</pre></td>
+              </tr>
+            </tbody>
+          </table>
+
+        </article>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
